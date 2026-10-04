@@ -87,14 +87,10 @@ function extractFirstArrayItemString(json, key) {
 }
 
 function extractImage(channel) {
-  if (!channel.image || !channel.image.url || !channel.image.url.length) {
-    if (!channel['itunes:image'] || !channel['itunes:image'].length || !channel['itunes:image'][0]['$']) {
-      return null
-    }
-    var itunesImage = channel['itunes:image'][0]['$']
-    return itunesImage.href || null
-  }
-  return channel.image.url[0] || null
+  // Prefer itunes:image (large square artwork) over the RSS <image>, which is capped at 144px wide
+  const itunesImage = channel['itunes:image']?.[0]?.['$']
+  if (itunesImage?.href) return itunesImage.href
+  return channel.image?.[0]?.url?.[0] || null
 }
 
 function extractCategories(channel) {
