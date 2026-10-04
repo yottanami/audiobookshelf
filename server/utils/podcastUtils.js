@@ -154,10 +154,11 @@ function extractEpisodeData(item) {
   // Episode must have url
   let enclosure
 
+  const audioMediaContent = item['media:content']?.find((c) => c?.['$']?.url && (c['$'].type ?? '').startsWith('audio'))
   if (item.enclosure?.[0]?.['$']?.url) {
     enclosure = item.enclosure[0]['$']
-  } else if (item['media:content']?.find((c) => c?.['$']?.url && (c?.['$']?.type ?? '').startsWith('audio'))) {
-    enclosure = item['media:content'].find((c) => (c['$']?.type ?? '').startsWith('audio'))['$']
+  } else if (audioMediaContent) {
+    enclosure = audioMediaContent['$']
   } else {
     Logger.error(`[podcastUtils] Invalid podcast episode data`)
     return null
